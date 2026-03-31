@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'dart:async';
 
+import 'package:task/features/home/views/homepage.dart';
+
 class Otpverificationpage extends StatefulWidget {
   const Otpverificationpage({super.key});
 
@@ -191,6 +193,10 @@ class _OtpverificationpageState extends State<Otpverificationpage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('OTP Verified!')),
                         );
+
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  HomePage(
+                          
+                        )));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Invalid OTP. Please try again.')),
