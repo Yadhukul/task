@@ -6,7 +6,7 @@ enum SortOption {
   ageYounger,
 }
 
-class SortBottomSheet extends StatefulWidget {
+class SortBottomSheet extends StatelessWidget {
   final SortOption currentSort;
 
   const SortBottomSheet({
@@ -15,71 +15,85 @@ class SortBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<SortBottomSheet> createState() => _SortBottomSheetState();
-}
-
-class _SortBottomSheetState extends State<SortBottomSheet> {
-  late SortOption _selectedSort;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedSort = widget.currentSort;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            'Sort',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        SortOption selectedSort = currentSort;
+
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          const SizedBox(height: 24),
-          _buildSortOption(
-            title: 'All',
-            value: SortOption.all,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Sort',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 24),
+              _buildSortOption(
+                context: context,
+                setState: setState,
+                title: 'All',
+                value: SortOption.all,
+                selectedSort: selectedSort,
+                onSelect: (value) {
+                  selectedSort = value;
+                },
+              ),
+              const SizedBox(height: 16),
+              _buildSortOption(
+                context: context,
+                setState: setState,
+                title: 'Age: Elder',
+                value: SortOption.ageElder,
+                selectedSort: selectedSort,
+                onSelect: (value) {
+                  selectedSort = value;
+                },
+              ),
+              const SizedBox(height: 16),
+              _buildSortOption(
+                context: context,
+                setState: setState,
+                title: 'Age: Younger',
+                value: SortOption.ageYounger,
+                selectedSort: selectedSort,
+                onSelect: (value) {
+                  selectedSort = value;
+                },
+              ),
+              const SizedBox(height: 24),
+            ],
           ),
-          const SizedBox(height: 16),
-          _buildSortOption(
-            title: 'Age: Elder',
-            value: SortOption.ageElder,
-          ),
-          const SizedBox(height: 16),
-          _buildSortOption(
-            title: 'Age: Younger',
-            value: SortOption.ageYounger,
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildSortOption({
+    required BuildContext context,
+    required StateSetter setState,
     required String title,
     required SortOption value,
+    required SortOption selectedSort,
+    required Function(SortOption) onSelect,
   }) {
-    final isSelected = _selectedSort == value;
-    
+    final isSelected = selectedSort == value;
+
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedSort = value;
+          onSelect(value);
         });
-        // Return the selected option after a short delay for visual feedback
         Future.delayed(const Duration(milliseconds: 200), () {
           Navigator.of(context).pop(value);
         });
